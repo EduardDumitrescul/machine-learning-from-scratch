@@ -1,10 +1,9 @@
-from typing import Self, Optional
+from typing import Self
 
 import numpy as np
 
 from automatic_diff_engine.tensor.function import Function
 from automatic_diff_engine.tensor.functions.addition_function import AdditionFunction
-from automatic_diff_engine.tensor.functions.constant_function import ConstantFunction
 from automatic_diff_engine.tensor.functions.exponential_function import ExponentialFunction
 from automatic_diff_engine.tensor.functions.multiplication_function import MultiplicationFunction
 from automatic_diff_engine.tensor.tensor_data import TensorData
@@ -14,7 +13,7 @@ class Tensor:
     def __init__(
             self,
             data: np.ndarray,
-            creator_func: Function = ConstantFunction(),
+            creator_func: Function = None,
             creator_operands = None,
             requires_grad = True,
     ):
@@ -38,6 +37,8 @@ class Tensor:
 
         build_topo(self)
         for tensor in reversed(topo):
+            if tensor.creator_func is None:
+                continue
             grads = tensor.creator_func.backward(tensor.grad, *[t.data for t in tensor.creator_operands])
             if not isinstance(grads, tuple):
                 grads = (grads,)
@@ -45,12 +46,6 @@ class Tensor:
             for i in range(len(tensor.creator_operands)):
                 if tensor.creator_operands[i].requires_grad:
                     tensor.creator_operands[i].grad += grads[i]
-
-            # for i, grad in enumerate(grads):
-            #     if i < len(tensor.creator_operands):
-            #         creator_operand = tensor.creator_operands[i]
-            #         if grad is not None and creator_operand.requires_grad:
-            #             creator_operand.grad += grad
 
     def __repr__(self) -> str:
         return f"Tensor: {self.data}"
@@ -81,13 +76,13 @@ class Tensor:
     def __pow__(self, power, modulo=None):
         power = Tensor(
             data = power,
-            creator_func = ConstantFunction(),
+            creator_func = None,
             creator_operands = [],
             requires_grad = False
         )
         exponential = ExponentialFunction()
         result = Tensor(
-            data = exponential.forward(self.data, power),
+            data = exponential.forward(self.data, power.data),
             creator_func = exponential,
             creator_operands = [self, power]
         )
