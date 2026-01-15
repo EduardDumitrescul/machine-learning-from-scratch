@@ -8,10 +8,12 @@ class ExponentialFunction(Function):
     def __init__(self):
         super().__init__()
 
-    def forward(self, base: TensorData, power: TensorData):
+    @staticmethod
+    def forward(base: TensorData, power: TensorData):
         return base.value ** power.value
 
-    def backward(self, grad: np.typing.NDArray, *operands):
+    @staticmethod
+    def backward(grad: np.typing.NDArray, *operands):
         assert len(operands) == 2
         assert type(operands[0]) == TensorData
         assert type(operands[1]) == TensorData

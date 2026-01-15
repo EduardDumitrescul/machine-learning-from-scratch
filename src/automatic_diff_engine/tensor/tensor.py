@@ -1,4 +1,4 @@
-from typing import Self
+from typing import Self, Type
 
 import numpy as np
 
@@ -13,7 +13,7 @@ class Tensor:
     def __init__(
             self,
             data: np.ndarray,
-            creator_func: Function = None,
+            creator_func: Type[Function] = None,
             creator_operands = None,
             requires_grad = True,
     ):
@@ -51,10 +51,9 @@ class Tensor:
         return f"Tensor: {self.data}"
 
     def __add__(self, other: Self) -> Self:
-        addition = AdditionFunction()
         result = Tensor(
-            data = addition.forward(self.data, other.data),
-            creator_func = addition,
+            data = AdditionFunction.forward(self.data, other.data),
+            creator_func = AdditionFunction,
             creator_operands = [self, other]
         )
 
@@ -64,10 +63,9 @@ class Tensor:
         return Tensor(self.value - other.value)
 
     def __mul__(self, other: Self) -> Self:
-        multiplication = MultiplicationFunction()
         result = Tensor(
-            data = multiplication.forward(self.data, other.data),
-            creator_func = multiplication,
+            data = MultiplicationFunction.forward(self.data, other.data),
+            creator_func = MultiplicationFunction,
             creator_operands = [self, other]
         )
 
@@ -80,10 +78,9 @@ class Tensor:
             creator_operands = [],
             requires_grad = False
         )
-        exponential = ExponentialFunction()
         result = Tensor(
-            data = exponential.forward(self.data, power.data),
-            creator_func = exponential,
+            data = ExponentialFunction.forward(self.data, power.data),
+            creator_func = ExponentialFunction,
             creator_operands = [self, power]
         )
 

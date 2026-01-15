@@ -9,12 +9,11 @@ class Function(ABC):
     def __init__(self):
         pass
 
-
-    @abstractmethod
-    def forward(self, *operands):
+    @staticmethod
+    def forward(*operands):
         raise NotImplementedError
 
-    @abstractmethod
-    def backward(self, grad: np.typing.NDArray, operands: list[TensorData]) -> list[np.typing.NDArray]:
+    @staticmethod
+    def backward(grad: np.typing.NDArray, operands: list[TensorData]) -> list[np.typing.NDArray]:
         raise NotImplementedError
 
