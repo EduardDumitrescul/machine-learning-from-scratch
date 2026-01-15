@@ -62,3 +62,15 @@ class Tensor:
 
         result._backward_func = _backward_func
         return result
+
+    def __pow__(self, power, modulo=None):
+        result = Tensor(
+            data = self.data ** power,
+            creators = [self]
+        )
+
+        def _backward_func():
+            self.grad += power * self.data**(power-1) * result.grad
+
+        result._backward_func = _backward_func
+        return result

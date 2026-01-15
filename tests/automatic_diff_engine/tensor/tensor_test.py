@@ -92,7 +92,7 @@ def test_equation():
     assert result.shape() == (1, )
     assert result.data.tolist() == [29]
 
-def test_addition_backwards():
+def test_addition_backwards_scalar():
     a = Tensor(np.array([1]))
     b = Tensor(np.array([4]))
 
@@ -103,7 +103,18 @@ def test_addition_backwards():
     assert a.grad.tolist() == [1]
     assert a.grad.tolist() == [1]
 
-def test_multiplication_backwards():
+def test_addition_backwards_vector():
+    a = Tensor(np.array([4, 5, 6]))
+    b = Tensor(np.array([1, 2, 3]))
+
+    result = a + b
+    result.backward()
+
+    assert result.grad.tolist() == [1, 1, 1]
+    assert a.grad.tolist() == [1, 1, 1]
+    assert a.grad.tolist() == [1, 1, 1]
+
+def test_multiplication_backwards_scalar():
     a = Tensor(np.array([2]))
     b = Tensor(np.array([4]))
 
@@ -114,7 +125,18 @@ def test_multiplication_backwards():
     assert a.grad.tolist() == [4]
     assert b.grad.tolist() == [2]
 
-def test_first_grade_equation_backwards():
+def test_multiplication_backwards_vector():
+    a = Tensor(np.array([2, 2, 2]))
+    b = Tensor(np.array([4, 4, 4]))
+
+    result = a * b
+    result.backward()
+
+    assert result.grad.tolist() == [1, 1, 1]
+    assert a.grad.tolist() == [4, 4, 4]
+    assert b.grad.tolist() == [2, 2, 2]
+
+def test_first_grade_equation_backwards_scalar():
     a = Tensor(np.array([1]))
     b = Tensor(np.array([4]))
     x = Tensor(np.array([7]))
@@ -125,5 +147,31 @@ def test_first_grade_equation_backwards():
     assert x.grad.tolist() == a.data.tolist()
     assert a.grad.tolist() == x.data.tolist()
     assert b.grad.tolist() == [1]
+
+def test_first_grade_equation_backwards_vector():
+    a = Tensor(np.array([1, 1]))
+    b = Tensor(np.array([4, 4]))
+    x = Tensor(np.array([7, 7]))
+
+    y = a * (x + b)
+    y.backward()
+    assert y.grad.tolist() == [1, 1]
+    assert x.grad.tolist() == a.data.tolist()
+    assert a.grad.tolist() == (x+b).data.tolist()
+    assert b.grad.tolist() == a.data.tolist()
+
+def test_exponentiation_vector():
+    a = Tensor(np.array([1, 2, 3]))
+
+    result = a**2
+    assert result.data.tolist() == [1, 4, 9]
+
+def test_exponentiation_backwards_vector():
+    a = Tensor(np.array([1, 2, 3]))
+
+    result = a**2
+    result.backward()
+
+    assert a.grad.tolist() == [2, 4, 6]
 
 
