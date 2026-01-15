@@ -6,18 +6,20 @@ from automatic_diff_engine.tensor.function import Function
 from automatic_diff_engine.tensor.functions.addition_function import AdditionFunction
 from automatic_diff_engine.tensor.functions.exponential_function import ExponentialFunction
 from automatic_diff_engine.tensor.functions.multiplication_function import MultiplicationFunction
+from automatic_diff_engine.tensor.functions.subtraction_function import SubtractionFunction
 from automatic_diff_engine.tensor.tensor_data import TensorData
 
 
 class Tensor:
     def __init__(
             self,
-            data: np.ndarray,
+            data,
             creator_func: Type[Function] = None,
             creator_operands = None,
             requires_grad = True,
     ):
-        self.data = TensorData(np.array(data, dtype=np.float64), np.zeros_like(data, dtype=np.float64), requires_grad)
+        data = np.atleast_1d(np.array(data, dtype=np.float64))
+        self.data = TensorData(data, np.zeros_like(data, dtype=np.float64), requires_grad)
         self.creator_func = creator_func
         self.creator_operands = creator_operands if creator_operands is not None else []
 
@@ -60,7 +62,13 @@ class Tensor:
         return result
 
     def __sub__(self, other: Self) -> Self:
-        return Tensor(self.value - other.value)
+        result = Tensor(
+            data=SubtractionFunction.forward(self.data, other.data),
+            creator_func=SubtractionFunction,
+            creator_operands=[self, other]
+        )
+
+        return result
 
     def __mul__(self, other: Self) -> Self:
         result = Tensor(
