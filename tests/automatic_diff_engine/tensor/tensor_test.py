@@ -82,3 +82,48 @@ def test_multiplication_matrices():
     assert result.shape() == (2, 2, )
     assert result.data.tolist() == [[2, 2], [2, 2]]
 
+def test_equation():
+    a = Tensor(np.array([1]))
+    b = Tensor(np.array([4]))
+    c = Tensor(np.array([7]))
+
+    result = a + b * c
+
+    assert result.shape() == (1, )
+    assert result.data.tolist() == [29]
+
+def test_addition_backwards():
+    a = Tensor(np.array([1]))
+    b = Tensor(np.array([4]))
+
+    result = a + b
+    result.backward()
+
+    assert result.grad.tolist() == [1]
+    assert a.grad.tolist() == [1]
+    assert a.grad.tolist() == [1]
+
+def test_multiplication_backwards():
+    a = Tensor(np.array([2]))
+    b = Tensor(np.array([4]))
+
+    result = a * b
+    result.backward()
+
+    assert result.grad.tolist() == [1]
+    assert a.grad.tolist() == [4]
+    assert b.grad.tolist() == [2]
+
+def test_first_grade_equation_backwards():
+    a = Tensor(np.array([1]))
+    b = Tensor(np.array([4]))
+    x = Tensor(np.array([7]))
+
+    y = a * x + b
+    y.backward()
+    assert y.grad.tolist() == [1]
+    assert x.grad.tolist() == a.data.tolist()
+    assert a.grad.tolist() == x.data.tolist()
+    assert b.grad.tolist() == [1]
+
+

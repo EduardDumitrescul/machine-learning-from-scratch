@@ -205,3 +205,10 @@ cython_debug/
 marimo/_static/
 marimo/_lsp/
 __marimo__/
+/.idea/vcs.xml
+/.vscode/settings.json
+/.vscode/PythonImportHelper-v2-Completion.json
+/.idea/inspectionProfiles/profiles_settings.xml
+/.idea/modules.xml
+/.idea/misc.xml
+/.idea/machine-learning-from-scratch.iml
