@@ -6,3 +6,6 @@ class TensorData:
         self.value = np.array(value)
         self.grad = np.array(grad)
         self.requires_grad = requires_grad
+
+    def __eq__(self, other):
+        return self.value == other.value

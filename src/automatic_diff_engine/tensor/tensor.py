@@ -5,6 +5,7 @@ import numpy as np
 from automatic_diff_engine.tensor.function import Function
 from automatic_diff_engine.tensor.functions.addition_function import AdditionFunction
 from automatic_diff_engine.tensor.functions.exponential_function import ExponentialFunction
+from automatic_diff_engine.tensor.functions.matrix_multiplication import MatrixMultiplication
 from automatic_diff_engine.tensor.functions.multiplication_function import MultiplicationFunction
 from automatic_diff_engine.tensor.functions.subtraction_function import SubtractionFunction
 from automatic_diff_engine.tensor.tensor_data import TensorData
@@ -92,6 +93,14 @@ class Tensor:
             creator_operands = [self, power]
         )
 
+        return result
+
+    def __matmul__(self, other: Self) -> Self:
+        result = Tensor(
+            data =  MatrixMultiplication.forward(self.data, other.data),
+            creator_func = MatrixMultiplication,
+            creator_operands = [self, other]
+        )
         return result
 
     @property
