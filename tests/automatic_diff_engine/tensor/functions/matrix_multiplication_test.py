@@ -3,7 +3,7 @@ import numpy as np
 from automatic_diff_engine.tensor.tensor import Tensor
 
 
-def test_matrix_multiplication():
+def test_forward():
     matrix1 = np.array([[1, 2, 3], [4, 5, 6], [7, 8, 9]])
     matrix2 = np.array([[1, 2, 3], [4, 5, 6], [7, 8, 9]])
 
@@ -13,7 +13,19 @@ def test_matrix_multiplication():
     result = tensor1 @ tensor2
     assert (result.value == matrix1 @ matrix2).all()
 
-def test_matrix_multiplication_backward():
+def test_forward_triple():
+    matrix1 = np.array([[1, 2, 3], [4, 5, 6], [7, 8, 9]])
+    matrix2 = np.array([[1, 2, 3], [4, 5, 6], [7, 8, 9]])
+    matrix3 = np.array([[1, 2, 3], [4, 5, 6], [7, 8, 9]])
+
+    tensor1 = Tensor(matrix1)
+    tensor2 = Tensor(matrix2)
+    tensor3 = Tensor(matrix3)
+
+    result = tensor1 @ tensor2 @ tensor3
+    assert (result.value == matrix1 @ matrix2 @ matrix3).all()
+
+def test_backward():
     matrix1 = np.array([[1, 2, 3], [4, 5, 6]])
     matrix2 = np.array([[1, 2], [4, 5], [7, 8]])
 
@@ -28,7 +40,7 @@ def test_matrix_multiplication_backward():
     assert (tensor2.grad == matrix1.T @ np.ones_like(result.grad)).all()
 
 
-def test_triple_matrix_multiplication_deterministic():
+def test_backward_triple():
     # Setup sequential matrices
     A_mat = np.arange(6).reshape(2, 3)  # [[0, 1, 2], [3, 4, 5]]
     B_mat = np.arange(12).reshape(3, 4)  # [[0..3], [4..7], [8..11]]
