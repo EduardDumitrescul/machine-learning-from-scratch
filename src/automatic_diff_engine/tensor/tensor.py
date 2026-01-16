@@ -20,7 +20,8 @@ class Tensor:
             requires_grad = True,
     ):
         data = np.atleast_1d(np.array(data, dtype=np.float64))
-        self.data = TensorData(data, np.zeros_like(data, dtype=np.float64), requires_grad)
+        grad = np.zeros_like(data, dtype=np.float64)
+        self.data = TensorData(data, grad, requires_grad)
         self.creator_func = creator_func
         self.creator_operands = creator_operands if creator_operands is not None else []
 
@@ -48,7 +49,10 @@ class Tensor:
 
             for i in range(len(tensor.creator_operands)):
                 if tensor.creator_operands[i].requires_grad:
-                    tensor.creator_operands[i].grad += grads[i]
+                    if tensor.creator_operands[i].grad is None:
+                        tensor.creator_operands[i].grad = grads[i]
+                    else:
+                        tensor.creator_operands[i].grad = tensor.creator_operands[i].grad + grads[i]
 
     def __repr__(self) -> str:
         return f"Tensor: {self.data}"
@@ -129,4 +133,4 @@ class Tensor:
 
     @property
     def shape(self):
-        return np.shape(self.data)
+        return self.value.shape

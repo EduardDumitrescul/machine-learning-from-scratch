@@ -27,6 +27,19 @@ def test_forward_matrix_equation():
     result = (tensor1 + tensor2) @ tensor3
     assert (result.value == (matrix1 + matrix2) @ matrix3).all()
 
+def test_forward_matrix_equation_with_bias():
+    weights = np.array([[1, 2], [3, 4], [5, 6]])
+    features = np.array([[7], [8]])
+    bias = np.array([1, 2, 3])
+    features_tensor = Tensor(features)
+    weights_tensor = Tensor(weights)
+    bias_tensor = Tensor(bias)
+
+    result = weights_tensor @ features_tensor + bias_tensor
+    expected = weights @ features + bias
+
+    assert (result.value == expected).all()
+
 def test_backward_scalar_equation():
     a = Tensor(np.array([1]))
     b = Tensor(np.array([4]))
@@ -64,6 +77,23 @@ def test_backward_matrix_equation():
     assert (tensor1.grad == result.grad @ matrix3.T).all()
     assert (tensor2.grad == result.grad @ matrix3.T).all()
     assert (tensor3.grad == (matrix1.T + matrix2.T) @ result.grad).all()
+
+def test_backward_matrix_equation_with_bias():
+    weights = np.array([[1, 2], [3, 4], [5, 6]])
+    features = np.array([[7], [8]])
+    bias = np.array([[1], [2], [3]])
+    features_tensor = Tensor(features)
+    weights_tensor = Tensor(weights)
+    bias_tensor = Tensor(bias, requires_grad=False)
+
+    result = weights_tensor @ features_tensor + bias_tensor
+    result.backward()
+
+    expected_weights_grad = result.grad @ features.T
+    expected_bias_grad = np.zeros_like(result.grad)
+
+    assert (weights_tensor.grad == expected_weights_grad).all()
+    assert (bias_tensor.grad == expected_bias_grad).all()
 
 
 
