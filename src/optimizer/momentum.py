@@ -1,14 +1,16 @@
+import numpy as np
+
 class Momentum:
     def __init__(self, parameters, learning_rate, beta):
         self.parameters = parameters
         self.learning_rate = learning_rate
         self.beta = beta
-        self.velocity = 0
+        self.momentums = [np.zeros_like(p.value) for p in parameters]
 
     def step(self):
-        for parameter in self.parameters:
-            self.velocity = self.beta * self.velocity + parameter.grad
-            parameter.value = parameter.value - self.velocity * self.learning_rate
+        for i in range(len(self.parameters)):
+            self.momentums[i] = self.beta * self.momentums[i] + self.parameters[i].grad
+            self.parameters[i].value = self.parameters[i].value - self.momentums[i] * self.learning_rate
 
     def zero_grad(self):
         for parameter in self.parameters:
