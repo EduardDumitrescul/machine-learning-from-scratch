@@ -8,6 +8,7 @@ from automatic_diff_engine.functions.exponential_function import ExponentialFunc
 from automatic_diff_engine.functions.matrix_multiplication import MatrixMultiplication
 from automatic_diff_engine.functions.mean_function import MeanFunction
 from automatic_diff_engine.functions.multiplication_function import MultiplicationFunction
+from automatic_diff_engine.functions.relu_function import ReLU
 from automatic_diff_engine.functions.subtraction_function import SubtractionFunction
 from automatic_diff_engine.tensor_data import TensorData
 
@@ -115,6 +116,14 @@ class Tensor:
         result = Tensor(
             data = MeanFunction.forward(self.data),
             creator_func = MeanFunction,
+            creator_operands = [self]
+        )
+        return result
+
+    def relu(self) -> Self:
+        result = Tensor(
+            data = ReLU.forward(self.data),
+            creator_func=ReLU,
             creator_operands = [self]
         )
         return result
