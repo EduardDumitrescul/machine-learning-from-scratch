@@ -20,4 +20,5 @@ class ExponentialFunction(Function):
 
         base = operands[0]
         power = operands[1]
-        return grad * power.value * (base.value ** (power.value - 1)), None
+        base_grad = Function.unbroadcast(grad * power.value * (base.value ** (power.value - 1)), base.value.shape)
+        return base_grad, None

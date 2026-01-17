@@ -6,6 +6,7 @@ from automatic_diff_engine.tensor.function import Function
 from automatic_diff_engine.tensor.functions.addition_function import AdditionFunction
 from automatic_diff_engine.tensor.functions.exponential_function import ExponentialFunction
 from automatic_diff_engine.tensor.functions.matrix_multiplication import MatrixMultiplication
+from automatic_diff_engine.tensor.functions.mean_function import MeanFunction
 from automatic_diff_engine.tensor.functions.multiplication_function import MultiplicationFunction
 from automatic_diff_engine.tensor.functions.subtraction_function import SubtractionFunction
 from automatic_diff_engine.tensor.tensor_data import TensorData
@@ -61,11 +62,6 @@ class Tensor:
         return f"Tensor: {self.data}"
 
     def __add__(self, other) -> Self:
-        if not isinstance(other, Tensor):
-            other = Tensor(
-                data = other,
-                requires_grad = False,
-            )
         result = Tensor(
             data = AdditionFunction.forward(self.data, other.data),
             creator_func = AdditionFunction,
@@ -74,12 +70,7 @@ class Tensor:
 
         return result
 
-    def __sub__(self, other: Self) -> Self:
-        if not isinstance(other, Tensor):
-            other = Tensor(
-                data = other,
-                requires_grad = False,
-            )
+    def __sub__(self, other) -> Self:
         result = Tensor(
             data=SubtractionFunction.forward(self.data, other.data),
             creator_func=SubtractionFunction,
@@ -88,12 +79,7 @@ class Tensor:
 
         return result
 
-    def __mul__(self, other: Union[Self, np.typing.NDArray]) -> Self:
-        if not isinstance(other, Tensor):
-            other = Tensor(
-                data=other,
-                requires_grad = False,
-            )
+    def __mul__(self, other) -> Self:
         result = Tensor(
             data = MultiplicationFunction.forward(self.data, other.data),
             creator_func = MultiplicationFunction,
@@ -125,6 +111,19 @@ class Tensor:
         )
         return result
 
+    def mean(self):
+        result = Tensor(
+            data = MeanFunction.forward(self.data),
+            creator_func = MeanFunction,
+            creator_operands = [self]
+        )
+        return result
+
+    def __array__(self, dtype=None):
+        if dtype:
+            return self.value.astype(dtype)
+        return self.value
+
     @property
     def value(self) -> np.typing.NDArray[np.float64]:
         return self.data.value
@@ -152,3 +151,7 @@ class Tensor:
     @property
     def shape(self):
         return self.value.shape
+
+    @property
+    def size(self):
+        return self.value.size

@@ -12,4 +12,8 @@ class MatrixMultiplication(Function):
         assert len(operands) == 2
         assert isinstance(operands[0], TensorData)
         assert isinstance(operands[1], TensorData)
-        return grad @ operands[1].value.T, operands[0].value.T @ grad
+
+        grad1 = Function.unbroadcast(grad @ operands[1].value.T, operands[0].value.shape)
+        grad2 = Function.unbroadcast(operands[0].value.T @ grad, operands[1].value.shape)
+
+        return grad1, grad2

@@ -102,6 +102,12 @@ def test_backward_matrix_equation_with_bias():
     assert (weights_tensor.grad == expected_weights_grad).all()
     assert (bias_tensor.grad == expected_bias_grad).all()
 
+def test_mean():
+    tensor = Tensor(np.array([1, 2, 3]))
+    result = tensor.mean()
+    assert isinstance(result, Tensor)
+    assert result.value == 2
+
 
 
 

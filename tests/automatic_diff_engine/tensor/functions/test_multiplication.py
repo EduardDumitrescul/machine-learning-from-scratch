@@ -27,13 +27,6 @@ def test_forward_matrices():
 
     assert result.value.tolist() == [[2, 2], [2, 2]]
 
-def test_forward_scalar_not_tensor():
-    lhs = Tensor(np.array([4]))
-    rhs = 4
-    result = lhs * rhs
-    assert (result.value == 16)
-
-
 def test_backwards_scalar():
     a = Tensor(np.array([2]))
     b = Tensor(np.array([4]))
