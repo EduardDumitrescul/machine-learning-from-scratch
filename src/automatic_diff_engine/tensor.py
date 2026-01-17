@@ -5,6 +5,7 @@ import numpy as np
 from automatic_diff_engine.function import Function
 from automatic_diff_engine.functions.addition_function import AdditionFunction
 from automatic_diff_engine.functions.exponential_function import ExponentialFunction
+from automatic_diff_engine.functions.log import Log
 from automatic_diff_engine.functions.matrix_multiplication import MatrixMultiplication
 from automatic_diff_engine.functions.mean_function import MeanFunction
 from automatic_diff_engine.functions.multiplication_function import MultiplicationFunction
@@ -133,6 +134,14 @@ class Tensor:
         result = Tensor(
             data = Sigmoid.forward(self.data),
             creator_func = Sigmoid,
+            creator_operands = [self]
+        )
+        return result
+
+    def log(self) -> Self:
+        result = Tensor(
+            data = Log.forward(self.data),
+            creator_func = Log,
             creator_operands = [self]
         )
         return result
