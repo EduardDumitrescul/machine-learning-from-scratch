@@ -9,6 +9,7 @@ from automatic_diff_engine.functions.matrix_multiplication import MatrixMultipli
 from automatic_diff_engine.functions.mean_function import MeanFunction
 from automatic_diff_engine.functions.multiplication_function import MultiplicationFunction
 from automatic_diff_engine.functions.relu_function import ReLU
+from automatic_diff_engine.functions.sigmoid import Sigmoid
 from automatic_diff_engine.functions.subtraction_function import SubtractionFunction
 from automatic_diff_engine.tensor_data import TensorData
 
@@ -124,6 +125,14 @@ class Tensor:
         result = Tensor(
             data = ReLU.forward(self.data),
             creator_func=ReLU,
+            creator_operands = [self]
+        )
+        return result
+
+    def sigmoid(self) -> Self:
+        result = Tensor(
+            data = Sigmoid.forward(self.data),
+            creator_func = Sigmoid,
             creator_operands = [self]
         )
         return result
