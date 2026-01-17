@@ -1,15 +1,15 @@
-from typing import Self, Type, Union
+from typing import Self, Type
 
 import numpy as np
 
-from automatic_diff_engine.tensor.function import Function
-from automatic_diff_engine.tensor.functions.addition_function import AdditionFunction
-from automatic_diff_engine.tensor.functions.exponential_function import ExponentialFunction
-from automatic_diff_engine.tensor.functions.matrix_multiplication import MatrixMultiplication
-from automatic_diff_engine.tensor.functions.mean_function import MeanFunction
-from automatic_diff_engine.tensor.functions.multiplication_function import MultiplicationFunction
-from automatic_diff_engine.tensor.functions.subtraction_function import SubtractionFunction
-from automatic_diff_engine.tensor.tensor_data import TensorData
+from automatic_diff_engine.function import Function
+from automatic_diff_engine.functions.addition_function import AdditionFunction
+from automatic_diff_engine.functions.exponential_function import ExponentialFunction
+from automatic_diff_engine.functions.matrix_multiplication import MatrixMultiplication
+from automatic_diff_engine.functions.mean_function import MeanFunction
+from automatic_diff_engine.functions.multiplication_function import MultiplicationFunction
+from automatic_diff_engine.functions.subtraction_function import SubtractionFunction
+from automatic_diff_engine.tensor_data import TensorData
 
 
 class Tensor:

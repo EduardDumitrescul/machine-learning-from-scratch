@@ -1,8 +1,8 @@
-from abc import abstractmethod, ABC
+from abc import ABC
 
 import numpy as np
 
-from automatic_diff_engine.tensor.tensor_data import TensorData
+from automatic_diff_engine.tensor_data import TensorData
 
 
 class Function(ABC):

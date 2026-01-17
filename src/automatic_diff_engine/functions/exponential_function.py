@@ -1,7 +1,7 @@
 import numpy as np
 
-from automatic_diff_engine.tensor.function import Function
-from automatic_diff_engine.tensor.tensor_data import TensorData
+from automatic_diff_engine.function import Function
+from automatic_diff_engine.tensor_data import TensorData
 
 
 class ExponentialFunction(Function):
