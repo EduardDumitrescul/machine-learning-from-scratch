@@ -1,6 +1,6 @@
 import numpy as np
 
-from automatic_diff_engine.tensor.tensor import Tensor
+from automatic_diff_engine.tensor import Tensor
 
 
 def test_forward():

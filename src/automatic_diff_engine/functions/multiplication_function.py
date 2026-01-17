@@ -1,5 +1,5 @@
-from automatic_diff_engine.tensor.function import Function
-from automatic_diff_engine.tensor.tensor_data import TensorData
+from automatic_diff_engine.function import Function
+from automatic_diff_engine.tensor_data import TensorData
 
 
 class MultiplicationFunction(Function):
@@ -16,4 +16,7 @@ class MultiplicationFunction(Function):
         assert isinstance(operands[0], TensorData)
         assert isinstance(operands[1], TensorData)
 
-        return grad * operands[1].value, grad * operands[0].value
+        grad1 = Function.unbroadcast(grad * operands[1].value, operands[0].value.shape)
+        grad2 = Function.unbroadcast(grad * operands[0].value, operands[1].value.shape)
+
+        return grad1, grad2

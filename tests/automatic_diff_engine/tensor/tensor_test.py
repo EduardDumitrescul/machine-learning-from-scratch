@@ -1,9 +1,16 @@
 import numpy as np
 
-from automatic_diff_engine.tensor.tensor import Tensor
+from automatic_diff_engine.tensor import Tensor
 
 def test_create_tensor():
     tensor = Tensor(np.array([1, 2, 3]))
+
+    assert tensor.value.tolist() == [1, 2, 3]
+
+def test_zero_grad():
+    tensor = Tensor(np.array([1, 2, 3]))
+    tensor.grad = [1, 2, 3]
+    tensor.zero_grad()
 
     assert tensor.value.tolist() == [1, 2, 3]
 
@@ -94,6 +101,12 @@ def test_backward_matrix_equation_with_bias():
 
     assert (weights_tensor.grad == expected_weights_grad).all()
     assert (bias_tensor.grad == expected_bias_grad).all()
+
+def test_mean():
+    tensor = Tensor(np.array([1, 2, 3]))
+    result = tensor.mean()
+    assert isinstance(result, Tensor)
+    assert result.value == 2
 
 
 

@@ -1,7 +1,7 @@
 import numpy as np
 
-from automatic_diff_engine.tensor.function import Function
-from automatic_diff_engine.tensor.tensor_data import TensorData
+from automatic_diff_engine.function import Function
+from automatic_diff_engine.tensor_data import TensorData
 
 
 class ExponentialFunction(Function):
@@ -20,4 +20,5 @@ class ExponentialFunction(Function):
 
         base = operands[0]
         power = operands[1]
-        return grad * power.value * (base.value ** (power.value - 1)), None
+        base_grad = Function.unbroadcast(grad * power.value * (base.value ** (power.value - 1)), base.value.shape)
+        return base_grad, None

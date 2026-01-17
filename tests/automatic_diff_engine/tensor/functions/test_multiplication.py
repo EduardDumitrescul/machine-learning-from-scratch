@@ -1,6 +1,6 @@
 import numpy as np
 
-from automatic_diff_engine.tensor.tensor import Tensor
+from automatic_diff_engine.tensor import Tensor
 
 
 def test_forward_scalar():
@@ -26,7 +26,6 @@ def test_forward_matrices():
     result = lhs * rhs
 
     assert result.value.tolist() == [[2, 2], [2, 2]]
-
 
 def test_backwards_scalar():
     a = Tensor(np.array([2]))
