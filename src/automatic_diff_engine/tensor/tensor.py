@@ -54,6 +54,9 @@ class Tensor:
                     else:
                         tensor.creator_operands[i].grad = tensor.creator_operands[i].grad + grads[i]
 
+    def zero_grad(self) -> None:
+        self.grad = np.zeros_like(self.value, dtype=np.float64)
+
     def __repr__(self) -> str:
         return f"Tensor: {self.data}"
 

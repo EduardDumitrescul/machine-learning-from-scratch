@@ -7,6 +7,13 @@ def test_create_tensor():
 
     assert tensor.value.tolist() == [1, 2, 3]
 
+def test_zero_grad():
+    tensor = Tensor(np.array([1, 2, 3]))
+    tensor.grad = [1, 2, 3]
+    tensor.zero_grad()
+
+    assert tensor.value.tolist() == [1, 2, 3]
+
 def test_forward_equation():
     a = Tensor(np.array([1]))
     b = Tensor(np.array([4]))
