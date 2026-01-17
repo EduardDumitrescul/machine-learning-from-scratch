@@ -10,6 +10,12 @@ def test_forward_scalar():
 
     assert result.value.tolist() == [5]
 
+def test_forward_scalar_not_tensor():
+    lhs = Tensor(np.array([4]))
+    rhs = 4
+    result = lhs + rhs
+    assert (result.value == 8)
+
 def test_forward_vector():
     lhs = Tensor(np.array([1, 2, 3]))
     rhs = Tensor(np.array([4, 5, 6]))
@@ -23,6 +29,7 @@ def test_forward_matrices():
     result = lhs + rhs
 
     assert result.value.tolist() == [[3, 3], [3, 3]]
+
 
 def test_backwards_scalar():
     a = Tensor(np.array([1]))

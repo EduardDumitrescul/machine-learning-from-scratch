@@ -1,4 +1,4 @@
-from typing import Self, Type
+from typing import Self, Type, Union
 
 import numpy as np
 
@@ -60,7 +60,12 @@ class Tensor:
     def __repr__(self) -> str:
         return f"Tensor: {self.data}"
 
-    def __add__(self, other: Self) -> Self:
+    def __add__(self, other) -> Self:
+        if not isinstance(other, Tensor):
+            other = Tensor(
+                data = other,
+                requires_grad = False,
+            )
         result = Tensor(
             data = AdditionFunction.forward(self.data, other.data),
             creator_func = AdditionFunction,
@@ -70,6 +75,11 @@ class Tensor:
         return result
 
     def __sub__(self, other: Self) -> Self:
+        if not isinstance(other, Tensor):
+            other = Tensor(
+                data = other,
+                requires_grad = False,
+            )
         result = Tensor(
             data=SubtractionFunction.forward(self.data, other.data),
             creator_func=SubtractionFunction,
@@ -78,7 +88,12 @@ class Tensor:
 
         return result
 
-    def __mul__(self, other: Self) -> Self:
+    def __mul__(self, other: Union[Self, np.typing.NDArray]) -> Self:
+        if not isinstance(other, Tensor):
+            other = Tensor(
+                data=other,
+                requires_grad = False,
+            )
         result = Tensor(
             data = MultiplicationFunction.forward(self.data, other.data),
             creator_func = MultiplicationFunction,
