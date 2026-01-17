@@ -12,6 +12,7 @@ from automatic_diff_engine.functions.multiplication_function import Multiplicati
 from automatic_diff_engine.functions.relu_function import ReLU
 from automatic_diff_engine.functions.sigmoid import Sigmoid
 from automatic_diff_engine.functions.subtraction_function import SubtractionFunction
+from automatic_diff_engine.functions.sum import Sum
 from automatic_diff_engine.tensor_data import TensorData
 
 
@@ -142,6 +143,14 @@ class Tensor:
         result = Tensor(
             data = Log.forward(self.data),
             creator_func = Log,
+            creator_operands = [self]
+        )
+        return result
+
+    def sum(self) -> Self:
+        result = Tensor(
+            data = Sum.forward(self.data),
+            creator_func = Sum,
             creator_operands = [self]
         )
         return result
