@@ -39,10 +39,9 @@ class Tensor:
         def build_topo(node: Self) -> None:
             if node not in visited:
                 visited.add(node)
-                if type(node) is Tensor and node.requires_grad:
-                    for next_node in node.creator_operands:
-                        build_topo(next_node)
-                    topo.append(node)
+                for next_node in node.creator_operands:
+                    build_topo(next_node)
+                topo.append(node)
 
         build_topo(self)
         for tensor in reversed(topo):
