@@ -24,7 +24,7 @@ class Tensor:
             creator_operands = None,
             requires_grad = True,
     ):
-        data = np.atleast_1d(np.array(data, dtype=np.float64))
+        data = np.array(data, dtype=np.float64)
         grad = np.zeros_like(data, dtype=np.float64)
         self.data = TensorData(data, grad, requires_grad)
         self.creator_func = creator_func

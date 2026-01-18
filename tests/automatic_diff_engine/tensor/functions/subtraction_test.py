@@ -25,8 +25,8 @@ def test_forward_matrices():
     assert result.value.tolist() == [[1, 1], [1, 1]]
 
 def test_backward_scalar():
-    a = Tensor(1)
-    b = Tensor(4)
+    a = Tensor([1])
+    b = Tensor([4])
 
     result = a - b
     result.backward()

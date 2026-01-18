@@ -10,10 +10,10 @@ class Log(Function):
 
     @staticmethod
     def forward(x: TensorData):
-        return np.log(x.value)
+        return np.log((x.value + 1e-19))
 
     @staticmethod
     def backward(grad, *operands):
         assert len(operands) == 1
-        grad = Function.unbroadcast(grad / operands[0].value, operands[0].value.shape)
+        grad = Function.unbroadcast(grad / (operands[0].value + 1e-19), operands[0].value.shape)
         return grad
