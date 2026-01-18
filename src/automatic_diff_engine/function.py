@@ -19,12 +19,14 @@ class Function(ABC):
 
     @staticmethod
     def unbroadcast(grad, target_shape):
+        # 1. Sum out leading extra dimensions
         while grad.ndim > len(target_shape):
-            grad = grad.sum(axis=0)
+            grad = np.sum(grad, axis=0)
 
-        for i, dim in enumerate(target_shape):
-            if dim == 1:
-                grad = grad.sum(axis=i, keepdims=True)
+        # 2. Sum out dimensions that were broadcasted from 1 to N
+        for axis, dim in enumerate(target_shape):
+            if dim == 1 and grad.shape[axis] > 1:
+                grad = np.sum(grad, axis=axis, keepdims=True)
 
         return grad
 

@@ -5,10 +5,15 @@ import numpy as np
 from automatic_diff_engine.function import Function
 from automatic_diff_engine.functions.addition_function import AdditionFunction
 from automatic_diff_engine.functions.exponential_function import ExponentialFunction
+from automatic_diff_engine.functions.log import Log
 from automatic_diff_engine.functions.matrix_multiplication import MatrixMultiplication
 from automatic_diff_engine.functions.mean_function import MeanFunction
 from automatic_diff_engine.functions.multiplication_function import MultiplicationFunction
+from automatic_diff_engine.functions.relu_function import ReLU
+from automatic_diff_engine.functions.reshape import Reshape
+from automatic_diff_engine.functions.sigmoid import Sigmoid
 from automatic_diff_engine.functions.subtraction_function import SubtractionFunction
+from automatic_diff_engine.functions.sum import Sum
 from automatic_diff_engine.tensor_data import TensorData
 
 
@@ -20,7 +25,7 @@ class Tensor:
             creator_operands = None,
             requires_grad = True,
     ):
-        data = np.atleast_1d(np.array(data, dtype=np.float64))
+        data = np.array(data, dtype=np.float64)
         grad = np.zeros_like(data, dtype=np.float64)
         self.data = TensorData(data, grad, requires_grad)
         self.creator_func = creator_func
@@ -35,10 +40,9 @@ class Tensor:
         def build_topo(node: Self) -> None:
             if node not in visited:
                 visited.add(node)
-                if type(node) is Tensor and node.requires_grad:
-                    for next_node in node.creator_operands:
-                        build_topo(next_node)
-                    topo.append(node)
+                for next_node in node.creator_operands:
+                    build_topo(next_node)
+                topo.append(node)
 
         build_topo(self)
         for tensor in reversed(topo):
@@ -115,6 +119,46 @@ class Tensor:
         result = Tensor(
             data = MeanFunction.forward(self.data),
             creator_func = MeanFunction,
+            creator_operands = [self]
+        )
+        return result
+
+    def relu(self) -> Self:
+        result = Tensor(
+            data = ReLU.forward(self.data),
+            creator_func=ReLU,
+            creator_operands = [self]
+        )
+        return result
+
+    def sigmoid(self) -> Self:
+        result = Tensor(
+            data = Sigmoid.forward(self.data),
+            creator_func = Sigmoid,
+            creator_operands = [self]
+        )
+        return result
+
+    def log(self) -> Self:
+        result = Tensor(
+            data = Log.forward(self.data),
+            creator_func = Log,
+            creator_operands = [self]
+        )
+        return result
+
+    def sum(self) -> Self:
+        result = Tensor(
+            data = Sum.forward(self.data),
+            creator_func = Sum,
+            creator_operands = [self]
+        )
+        return result
+
+    def reshape(self, new_shape: tuple):
+        result = Tensor(
+            data = Reshape.forward(self.data, new_shape),
+            creator_func = Reshape,
             creator_operands = [self]
         )
         return result
