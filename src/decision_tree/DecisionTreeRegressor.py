@@ -12,8 +12,9 @@ class DecisionTreeRegressorNode:
         self.prediction = None
         self.left = None
         self.right = None
+        self.eps = 1e-3
 
-    def fit(self, x, y):
+    def fit(self, x, y, verbose=True):
         if x.shape[0] < self.min_samples_split:
             self.prediction = np.mean(y)
             return
@@ -24,11 +25,20 @@ class DecisionTreeRegressorNode:
         if self.max_features is not None:
             indexes = np.random.choice(indexes, self.max_features, replace=False)
         for feature_index in indexes:
-            unique_values = np.sort(np.unique(x[:, feature_index]))
-            for i in range(self.min_samples_leaf, unique_values.shape[0]-self.min_samples_leaf-1):
-                threshold = (unique_values[i+1] + unique_values[i]) / 2
+            indices = x[:, feature_index].argsort()
+            x_sorted = x[indices]
+            y_sorted = y[indices]
 
-                x_left, y_left, x_right, y_right = self._split_by_threshold(x, y, feature_index, threshold)
+            for i in range(x_sorted.shape[0]-1):
+                if x_sorted[i+1][feature_index] - x_sorted[i][feature_index] < self.eps:
+                    continue
+                threshold = (x_sorted[i+1][feature_index] + x_sorted[i][feature_index]) / 2
+
+                y_left = y_sorted[:i]
+                y_right = y_sorted[i:]
+
+                if y_left.shape[0] < self.min_samples_split or y_right.shape[0] < self.min_samples_split:
+                    continue
 
                 mean_left = np.mean(y_left)
                 mean_right = np.mean(y_right)
@@ -47,17 +57,20 @@ class DecisionTreeRegressorNode:
             return
 
         x_left, y_left, x_right, y_right = self._split_by_threshold(x, y, self.best_feature_index, self.best_threshold)
-        print(f"Node split: feature_index={self.best_feature_index}, threshold={self.best_threshold}, left_size={x_left.shape[0]}, right_size={x_right.shape[0]}")
+        if verbose:
+            print(f"Node split: feature_index={self.best_feature_index}, threshold={self.best_threshold}, left_size={x_left.shape[0]}, right_size={x_right.shape[0]}")
         self.left = DecisionTreeRegressorNode(
             min_samples_leaf=self.min_samples_leaf,
-            min_samples_split=self.min_samples_split
+            min_samples_split=self.min_samples_split,
+            max_features=self.max_features
         )
-        self.left.fit(x_left, y_left)
+        self.left.fit(x_left, y_left, verbose)
         self.right = DecisionTreeRegressorNode(
             min_samples_leaf=self.min_samples_leaf,
-            min_samples_split=self.min_samples_split
+            min_samples_split=self.min_samples_split,
+            max_features=self.max_features
         )
-        self.right.fit(x_right, y_right)
+        self.right.fit(x_right, y_right, verbose)
 
     def predict(self, x):
         if self.prediction is not None:
@@ -89,8 +102,8 @@ class CustomDecisionTreeRegressor:
             max_features = max_features
         )
 
-    def fit(self, x, y):
-        self.root.fit(x, y)
+    def fit(self, x, y, verbose=True):
+        self.root.fit(x, y, verbose)
 
     def predict(self, x):
         return self.root.predict(x)
